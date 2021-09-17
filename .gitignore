@@ -1,0 +1,7 @@
+his_data/
+venv/
+__pycache__/
+.env
+.ipynb_checkpoints/
+*.ipynb
+*.pkl
