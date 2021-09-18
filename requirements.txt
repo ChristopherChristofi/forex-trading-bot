@@ -1,0 +1,6 @@
+requests
+pandas
+jupyter
+plotly
+xlsxwriter
+python-dotenv
