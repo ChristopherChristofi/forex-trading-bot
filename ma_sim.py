@@ -1,5 +1,6 @@
 import pandas as pd
 from dateutil.parser import *
+import warnings
 
 import utils
 import instrument
@@ -7,6 +8,7 @@ import ma_result
 from ma_excel import create_excel
 
 pd.set_option('display.max_columns', None)
+warnings.filterwarnings("ignore")
 
 def is_trade(row):
     if row.DIFF >= 0 and row.DIFF_PREV < 0:
@@ -71,6 +73,8 @@ def store_trades(results):
     all_trade_df = pd.concat(all_trade_df_list)
     all_trade_df.to_pickle("all_trades.pkl")
 
+    return all_trade_df
+
 def process_results(results):
 
     results_list = [r.result_ob() for r in results]
@@ -79,7 +83,7 @@ def process_results(results):
     final_df.to_pickle('ma_test_res.pkl')
     print(final_df.shape, final_df.num_trades.sum())
 
-    create_excel(final_df)
+    return final_df
 
 def get_test_pairs(pair_str):
     existing_pairs = instrument.Instrument.get_instruments_dict().keys()
@@ -114,9 +118,10 @@ def run():
                     continue
                 results.append(evaluate_pair(i_pair, _mashort, _malong, price_data))
 
-    process_results(results)
-    store_trades(results)
+    final_df = process_results(results)
+    all_trades_df = store_trades(results)
 
+    create_excel(final_df, all_trades_df)
 
 if __name__ == "__main__":
     run()
